@@ -10,13 +10,14 @@ import entidade.Books;
 import controller.Controller;
 import LivrariaDAO.ConexaoDAO;
 
+/**
+ * Classe application
+ * Feita para encapsular todo o fluxo da aplicação e executar todo o processo
+ * Podendo executar para realizar os testes
+ */
+
 @SuppressWarnings("unused")
 public class application {
-
-	public application() { 
-		
-	}
-
 	public static void main(String[] args) {
 		new Controller(new Janela(), new ConexaoDAO()).init();
 	}

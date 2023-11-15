@@ -11,11 +11,19 @@ import java.util.List;
 import entidade.Authors;
 import LivrariaDAO.ConexaoDAO;
 
+/** 
+ * @Class: PainelAutor 
+ * 	Essa classe é responsável de encapsular componentes que serão estruturados apenas para a aba de autor. 
+ *  Contem vários componentes para os inputs de dados, descritivos ao usuário e de disparo de eventos .
+ **/
+
 @SuppressWarnings("serial")
 public class PainelAutor extends JPanel implements View, ActionListener{
 
+	// Variável constante estática que define os títulos das colunas da tabela
 	private static final Object[] COLUMNS = {"Id", "Name", "FNAME"};
 	
+	//Componentes visuais que serão inseridos em tela
 	JPanel guiaAutores = new JPanel();
 	ButtonGroup buttonGroupAutores = new ButtonGroup();
 	JRadioButton insertAuthor = new JRadioButton("Inserir");
@@ -41,30 +49,44 @@ public class PainelAutor extends JPanel implements View, ActionListener{
     JButton deleteAuthorButton = new JButton("Deletar");
     JButton searchAuthorButton = new JButton("Buscar");
     
+	//Array de botões já criados, para que eu reduza o código e adicione eventListener em todos os botões
     JButton[] botoes = {insertAuthorButton, updateAuthorButton, deleteAuthorButton, searchAuthorButton};
 
+	// Método publico para executar a inicialização da criação da guia Autor
+	public JPanel createAutorTab() {
+		init();
+		return guiaAutores;
+	}
+
+	// Método herdado da classe abstrada View, onde inicializará os componentes e será criados seus respectivos espaços em tela
+	// mantendo uniformidade 
 	@Override
 	public void init() {
-
+		// Coloco no buttonGroup os radioButtons
 		buttonGroupAutores.add(insertAuthor);
 		buttonGroupAutores.add(updateAuthor);
 		buttonGroupAutores.add(deleteAuthor);		
 		buttonGroupAutores.add(searchAuthor);
 		
+		// Defino inicialmente que os botões de eventos que afetarão o BD serão inicialmente disabled
 		insertAuthorButton.setEnabled(false);
 		updateAuthorButton.setEnabled(false);
 		deleteAuthorButton.setEnabled(false);
 		searchAuthorButton.setEnabled(false);
 		
+		// Coloco os eventListeners nos botões que afetarão o BD
 		setActionsListeners();
 		
+		// Crio eventListener nos radioButtons para que habilitem os botões de evento de BD
         setUpdateRadioListener(updateAuthor);
         setSearchRadioListener(searchAuthor);
         setDeleteRadioListener(deleteAuthor);
         setInsertRadioListener(insertAuthor);
 
+		// Define a orietação (Vertical ou Horizal) para o separator
         authorTabSeparator1.setOrientation(SwingConstants.VERTICAL);
 
+		// Defino os labels que indicará o dado que deve ser entrado
         authorIdLabel.setFont(new Font("Segoe UI", 1, 12));
         authorIdLabel.setText("Id");
 
@@ -84,6 +106,8 @@ public class PainelAutor extends JPanel implements View, ActionListener{
         userInfoText2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         userInfoText2.setText("Obs: Se não inserir dados, fará uma pesquisa sem filtros.");
         
+		//	Daqui em diante, é uma sequência de códigos que servirão para criar de forma estrturada os componentes em tela 
+
         GroupLayout guiaAutoresLayout = new javax.swing.GroupLayout(guiaAutores);
         
         guiaAutores.setLayout(guiaAutoresLayout);
@@ -235,12 +259,8 @@ public class PainelAutor extends JPanel implements View, ActionListener{
         );
         
 	}
-    
-	public JPanel createAutorTab() {
-		init();
-		return guiaAutores;
-	}
-	
+
+	// Evento de RadioButton que vai colocar o botão de inserir como enabled ou disabled
 	private void setInsertRadioListener(JRadioButton item) {
 		item.addItemListener(new ItemListener() {
 			@Override
@@ -253,7 +273,8 @@ public class PainelAutor extends JPanel implements View, ActionListener{
 			}
 		});	
 	}
-	
+
+	// Evento de RadioButton que vai colocar o botão de atualizar como enabled ou disabled
 	private void setUpdateRadioListener(JRadioButton item) {
 		item.addItemListener(new ItemListener() {
 			@Override
@@ -267,6 +288,7 @@ public class PainelAutor extends JPanel implements View, ActionListener{
 		});	
 	}
 	
+	// Evento de RadioButton que vai colocar o botão de deletar como enabled ou disabled
 	private void setDeleteRadioListener(JRadioButton item) {
 		item.addItemListener(new ItemListener() {
 			@Override
@@ -284,6 +306,7 @@ public class PainelAutor extends JPanel implements View, ActionListener{
 		});	
 	}
 	
+	// Evento de RadioButton que vai colocar o botão de buscar como enabled ou disabled
 	private void setSearchRadioListener(JRadioButton item) {
 		item.addItemListener(new ItemListener() {
 			@Override
@@ -297,12 +320,13 @@ public class PainelAutor extends JPanel implements View, ActionListener{
 		});	
 	}
 
+	// Coloco eventos nos botões que farão alguma ação no BD 
 	private void setActionsListeners() {
-		for(JButton button: botoes) {
-			button.addActionListener(this);
-		}
+		for(JButton button: botoes) { button.addActionListener(this); }
 	}
-	
+
+	// Método que faz o dispatch da ação, verificará qual botão foi clicado
+	// Após identificar qual botão foi clicado, ele fará a ação para o objeto autor no BD
 	@Override
 	public void dispatchBDEvent(String context) {
 		
@@ -333,26 +357,28 @@ public class PainelAutor extends JPanel implements View, ActionListener{
 				cleanFields();
 				break;
 				
-			default:
-			
-				break;
+			default: break;
 		}
 	}
 	
+	// Método para limpar os campos após alguma ação no BD
 	private void cleanFields() {
 		authorId.setText("");
 		authorName.setText("");
 		authorFNAME.setText("");
 	}
 	
+	// Ação para popular o banco de dados de acordo com os dados procurados
 	private void populaTable(List<Authors> autores) {
 		tableModel.setRowCount(0);
 
 		for(Authors autor: autores) {
-			tableModel.addRow(new Object[] {autor.getId(), autor.getName(), autor.getFname()});
+			tableModel.addRow(new Object[] { autor.getId(), autor.getName(), autor.getFname() });
 		}
 	}
 
+	// Quando clicado no botão, essa ação override vai pegar o target, que seria o botão clicado, e chamar
+	// o método que identiica qual ação deveria ser executada para executar
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String context = ((JButton) e.getSource()).getText();

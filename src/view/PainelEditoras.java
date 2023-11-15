@@ -12,11 +12,19 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.List;
 
+/** 
+ * @Class: PainelEditoras 
+ * 	Essa classe é responsável de encapsular componentes que serão estruturados apenas para a aba de Editoras. 
+ *  Contem vários componentes para os inputs de dados, descritivos ao usuário e de disparo de eventos .
+ **/
+
 @SuppressWarnings("serial")
 public class PainelEditoras extends JPanel implements View, ActionListener{
 
+	// Variável constante estática que define os títulos das colunas da tabela
 	private static final Object[] COLUMNS = {"Id", "Name", "URL"};
 
+	//Componentes visuais que serão inseridos em tela
 	JPanel guiaEditoras = new JPanel();
 	ButtonGroup buttonGroupEditoras = new ButtonGroup();
 	JRadioButton insertPublisher = new JRadioButton("Inserir");
@@ -42,15 +50,17 @@ public class PainelEditoras extends JPanel implements View, ActionListener{
     JLabel userInfoText3 = new JLabel();
     JLabel userInfoText4 = new JLabel();
     
+	//Array de botões já criados, para que eu reduza o código e adicione eventListener em todos os botões
     JButton[] botoes = {insertPublisherButton, updatePublisherButton, searchPublisherButton, deletePublisherButton};
 
-	
+	// Método publico para executar a inicialização da criação da guia Editoras
 	public JPanel createEditoraTab() {
 		init();
-		setActionsListeners();
+		setActionsListeners();	// Coloco os eventListeners nos botões que afetarão o BD
 		return guiaEditoras;
 	}
 	
+	// Evento de RadioButton que vai colocar o botão de inserir como enabled ou disabled
 	private void setInsertRadioListener(JRadioButton item) {
 		item.addItemListener(new ItemListener() {
 			@Override
@@ -64,6 +74,7 @@ public class PainelEditoras extends JPanel implements View, ActionListener{
 		});	
 	}
 	
+	// Evento de RadioButton que vai colocar o botão de atualizar como enabled ou disabled
 	private void setUpdateRadioListener(JRadioButton item) {
 		item.addItemListener(new ItemListener() {
 			@Override
@@ -77,6 +88,7 @@ public class PainelEditoras extends JPanel implements View, ActionListener{
 		});	
 	}
 	
+	// Evento de RadioButton que vai colocar o botão de deletar como enabled ou disabled
 	private void setDeleteRadioListener(JRadioButton item) {
 		item.addItemListener(new ItemListener() {
 			@Override
@@ -94,6 +106,7 @@ public class PainelEditoras extends JPanel implements View, ActionListener{
 		});	
 	}
 	
+	// Evento de RadioButton que vai colocar o botão de buscar como enabled ou disabled
 	private void setSearchRadioListener(JRadioButton item) {
 		item.addItemListener(new ItemListener() {
 			@Override
@@ -107,26 +120,29 @@ public class PainelEditoras extends JPanel implements View, ActionListener{
 		});	
 	}
 	
+	// Coloco eventos nos botões que farão alguma ação no BD 
 	private void setActionsListeners() {
-		for(JButton button: botoes) {
-			button.addActionListener(this);
-		}
+		for(JButton button: botoes) { button.addActionListener(this); }
 	}
 	
+	// Método para limpar os campos após alguma ação no BD
 	private void cleanFields() {
 		publisherId.setText("");
 		publisherName.setText("");
 		publisherURL.setText("");
 	}
 	
+	// Ação para popular o banco de dados de acordo com os dados procurados
 	private void populaTable(List<Publishers> editoras) {
 		tableModel.setRowCount(0);
 
 		for(Publishers editora: editoras) {
-			tableModel.addRow(new Object[] {editora.getPublisher_id(), editora.getName(), editora.getUrl()});
+			tableModel.addRow(new Object[] { editora.getPublisher_id(), editora.getName(), editora.getUrl() });
 		}
 	}
 	
+	// Método que faz o dispatch da ação, verificará qual botão foi clicado
+	// Após identificar qual botão foi clicado, ele fará a ação para o objeto autor no BD
 	@Override
 	public void dispatchBDEvent(String context) {
 		
@@ -162,25 +178,32 @@ public class PainelEditoras extends JPanel implements View, ActionListener{
 		}
 	}
 
+	// Método herdado da classe abstrada View, onde inicializará os componentes e será criados seus respectivos espaços em tela
+	// mantendo uniformidade 
 	@Override
 	public void init() {
+		// Coloco no buttonGroup os radioButtons
         buttonGroupEditoras.add(insertPublisher);
         buttonGroupEditoras.add(updatePublisher);
         buttonGroupEditoras.add(deletePublisher);
         buttonGroupEditoras.add(searchPublisher);
         
+		// Defino inicialmente que os botões de eventos que afetarão o BD serão inicialmente disabled
         insertPublisherButton.setEnabled(false);
         updatePublisherButton.setEnabled(false);
         deletePublisherButton.setEnabled(false);
         searchPublisherButton.setEnabled(false);
-                
+        
+		// Crio eventListener nos radioButtons para que habilitem os botões de evento de BD
         setUpdateRadioListener(updatePublisher);
         setSearchRadioListener(searchPublisher);
         setDeleteRadioListener(deletePublisher);
         setInsertRadioListener(insertPublisher);
 
+		// Define a orietação (Vertical ou Horizal) para o separator
         publisherTabSeparator1.setOrientation(SwingConstants.VERTICAL);
 
+		// Defino os labels que indicará o dado que deve ser entrado
         publisherIdLabel.setFont(new Font("Segoe UI", 1, 12)); 
         publisherNameLabel.setFont(new Font("Segoe UI", 1, 12));
         publisherURLLabel.setFont(new Font("Segoe UI", 1, 12)); 
@@ -194,7 +217,8 @@ public class PainelEditoras extends JPanel implements View, ActionListener{
 
         userInfoText4.setFont(new Font("Segoe UI", 1, 12));
         userInfoText4.setText("Obs: Se não inserir dados, fará uma pesquisa sem filtros.");
-        
+  
+		//	Daqui em diante, é uma sequência de códigos que servirão para criar de forma estrturada os componentes em tela 
         GroupLayout guiaEditorasLayout = new GroupLayout(guiaEditoras);
         guiaEditoras.setLayout(guiaEditorasLayout);
         guiaEditorasLayout
@@ -383,6 +407,8 @@ public class PainelEditoras extends JPanel implements View, ActionListener{
             );
 	}
 
+	// Quando clicado no botão, essa ação override vai pegar o target, que seria o botão clicado, e chamar
+	// o método que identiica qual ação deveria ser executada para executar
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String context = ((JButton) e.getSource()).getText();

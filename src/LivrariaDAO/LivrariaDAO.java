@@ -5,6 +5,12 @@ import entidade.Authors;
 import entidade.Publishers;
 import entidade.Books;
 
+/** 
+ * @Interface: LivrariaDAO 
+ * 	Essa classe é responsável de abstrair os métodos, para que as classes concretas implementem
+ *  e possam implementar regras de negócios diferentes envolvendo a conexão com o banco de dados
+ **/
+
 public interface LivrariaDAO {	
 	public List<Authors> buscarAutores(Long id, String name, String fnaf);
 	public List<Publishers> buscarEditoras(Long id, String name, String url);

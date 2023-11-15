@@ -16,13 +16,21 @@ import entidade.Authors;
 import entidade.Books;
 import entidade.Publishers;
 
+/** 
+ * @Class: ConexaoDAO 
+ * 	Essa classe implmenta a interface LivrariaDAO
+ *  Ela implementa de forma concreta as regras de negócio para realizar operações no Bando de Dados
+ **/
+
 public class ConexaoDAO implements LivrariaDAO {
 
-	private final static String USER = "dan";
-	private final static String PASS = "H!%T0_Sp";
-	private final static String DATABASE = "livraria";
-	private final static String URL = "jdbc:mysql://localhost:3030/" + DATABASE;
+	// Chaves para acesso ao banco de dados
+	private final static String USER = "dan"; //Username
+	private final static String PASS = "H!%T0_Sp"; //Password
+	private final static String DATABASE = "livraria"; //DB ao ser utilizado
+	private final static String URL = "jdbc:mysql://localhost:3030/" + DATABASE; //URL
 
+	// Metodo para testar conexão ao BD
 	public boolean testaConnection() {
 		try(Connection c = DriverManager.getConnection(URL, USER, PASS)){
 			displaySuccessMessage("Sucesso ao conectar ao banco de dados!");
@@ -32,6 +40,9 @@ public class ConexaoDAO implements LivrariaDAO {
 		return false;
 	}
 
+	// Busca os autores de livros
+	// Nesse método ele verifica quais critérios o usuário entrou para a pesquisa
+	// Se não entrou dados, pesquisa todos
 	@Override
 	public List<Authors> buscarAutores(Long id, String name, String fname) {
 		List<Authors> autores = new ArrayList<Authors>();
@@ -89,11 +100,12 @@ public class ConexaoDAO implements LivrariaDAO {
 		}
 		catch (SQLException e) { displayErrorMessage("Não foi possível inserir o registro! \n" + e.getMessage()); }			
 
-
-		
 		return autores;
 	}
 
+	// Busca as editoras
+	// Nesse método ele verifica quais critérios o usuário entrou para a pesquisa
+	// Se não entrou dados, pesquisa todos
 	@Override
 	public List<Publishers> buscarEditoras(Long id, String name, String url) {
 		List<Publishers> editoras = new ArrayList<Publishers>();
@@ -151,10 +163,12 @@ public class ConexaoDAO implements LivrariaDAO {
 		} 
 		catch (SQLException e) { displayErrorMessage("Não foi possível inserir o registro! \n" + e.getMessage()); }			
 
-
 		return editoras;
 	}
 
+	// Busca os livros
+	// Nesse método ele verifica quais critérios o usuário entrou para a pesquisa
+	// Se não entrou dados, pesquisa todos
 	@Override
 	public List<Books> buscarLivros(Long publisher_id, String title, Double price, String isBn) {
 		List<Books> livros = new ArrayList<Books>();
@@ -223,10 +237,10 @@ public class ConexaoDAO implements LivrariaDAO {
 		} 
 		catch (SQLException e) { displayErrorMessage("Não foi possível inserir o registro! \n" + e.getMessage()); }			
 
-		
 		return livros;
 	}
 
+	// Insere os autores 
 	@Override
 	public void incluirAutor(Authors autor) {
 		try(Connection c = DriverManager.getConnection(URL, USER, PASS)){
@@ -248,6 +262,7 @@ public class ConexaoDAO implements LivrariaDAO {
 		catch (SQLException e) { displayErrorMessage("Não foi possível inserir o registro! \n" + e.getMessage()); }			
 	}
 
+	// Insere as editoras
 	@Override
 	public void incluirEditora(Publishers editora) {
 		try(Connection c = DriverManager.getConnection(URL, USER, PASS)){
@@ -269,6 +284,7 @@ public class ConexaoDAO implements LivrariaDAO {
 		catch (SQLException e) { displayErrorMessage("Não foi possível inserir o registro! \n" + e.getMessage()); }			
 	}
 
+	// Insere os livros
 	@Override
 	public void incluirLivro(Books livro) {
 		try(Connection c = DriverManager.getConnection(URL, USER, PASS)){
@@ -291,6 +307,7 @@ public class ConexaoDAO implements LivrariaDAO {
 		catch (SQLException e) { displayErrorMessage("Não foi possível inserir o registro! \n" + e.getMessage()); }			
 	}
 
+	// Atualiza no BD os autores
 	@Override
 	public void atualizarAutor(Authors autor) {
 		Boolean buscaId = autor.getId() != null;
@@ -302,7 +319,6 @@ public class ConexaoDAO implements LivrariaDAO {
 			if(buscaId)
 				conditions += "author_id = ?";
 			
-
 			if(!conditions.isBlank()) {
 				command += conditions;
 			}
@@ -330,6 +346,7 @@ public class ConexaoDAO implements LivrariaDAO {
 		catch (SQLException e) { displayErrorMessage("Não foi possível atualizar o registro! \n" + e.getMessage()); }			
 	}
 
+	// Atualiza no BD o registro da editora
 	@Override
 	public void atualizarEditora(Publishers editora) {
 		Boolean buscaId = editora.getPublisher_id() != null;
@@ -341,7 +358,6 @@ public class ConexaoDAO implements LivrariaDAO {
 			if(buscaId)
 				conditions += "publisher_id = ?";
 			
-
 			if(!conditions.isBlank()) {
 				command += conditions;
 			}
@@ -369,6 +385,7 @@ public class ConexaoDAO implements LivrariaDAO {
 		catch (SQLException e) { displayErrorMessage("Não foi possível atualizar o registro! \n" + e.getMessage()); }			
 	}
 
+	// Atualiza no BD o registro de um livro
 	@Override
 	public void atualizarLivro(Books livro) {
 		Boolean buscaId = livro.getPublisher_id() != null;
@@ -388,7 +405,6 @@ public class ConexaoDAO implements LivrariaDAO {
 			if(buscaIsBn)
 				conditions += " AND isbn = ?";
 			
-
 			if(!conditions.isBlank()) {
 				command += conditions;
 			}
@@ -428,6 +444,7 @@ public class ConexaoDAO implements LivrariaDAO {
 		catch (SQLException e) { displayErrorMessage("Não foi possível atualizar o registro! \n" + e.getMessage()); }			
 	}
 
+	// Apaga do BD o registro de autor
 	@Override
 	public void apagarAutor(Long id) {		
 		try(Connection c = DriverManager.getConnection(URL, USER, PASS)){
@@ -446,6 +463,7 @@ public class ConexaoDAO implements LivrariaDAO {
 		catch (SQLException e) { e.printStackTrace(); }	
 	}
 
+	// Apaga do BD um registro de editora
 	@Override
 	public void apagarEditora(Long id) {
 		try(Connection c = DriverManager.getConnection(URL, USER, PASS)){
@@ -464,6 +482,7 @@ public class ConexaoDAO implements LivrariaDAO {
 		catch (SQLException e) { e.printStackTrace(); }	
 	}
 
+	// Apaga do BD um registro de livro 
 	@Override
 	public void apagarLivro(Long id, String isbn) {
 		try(Connection c = DriverManager.getConnection(URL, USER, PASS)){
@@ -483,6 +502,11 @@ public class ConexaoDAO implements LivrariaDAO {
 		catch (SQLException e) { e.printStackTrace(); }	
 	}
 	
+	/**
+	 * Os métodos abaixo são para notificar ao usuário um tipo de mensagem, seja de erro, sucesso ou aviso
+	 * Para que ele tenha noção do que ocorre no backend 
+	*/
+
 	private void displayErrorMessage(String message) {
 		JOptionPane.showMessageDialog(new JFrame(), message, "Dialog", JOptionPane.ERROR_MESSAGE);
 	}

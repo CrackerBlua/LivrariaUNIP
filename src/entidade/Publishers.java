@@ -1,5 +1,11 @@
 package entidade;
 
+/**
+ * Classe feita como encapsulamento de dados, materializando um objeto
+ * podendo assim, trabalhar com os dados de editoras vindos do BD
+ * e facilitando a transformação de dados do objeto para ser enviado ao BD  
+ */
+
 public class Publishers {
 	private Long publisher_id;
 	private String name;

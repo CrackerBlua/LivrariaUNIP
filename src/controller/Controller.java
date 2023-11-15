@@ -3,6 +3,10 @@ package controller;
 import LivrariaDAO.ConexaoDAO;
 import view.Janela;
 
+/**
+ * Classe Controladora, feita para reaizar as operações de negócio do front-end  
+ */
+
 public class Controller {
 
 	ConexaoDAO dao;
